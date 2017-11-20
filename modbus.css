@@ -1,0 +1,65 @@
+table.table-style-two {
+	font-family: verdana, arial, sans-serif;
+	color: #333333;
+	border-width: 1px;
+	border-color: #3A3A3A;
+	border-collapse: collapse;
+}
+
+table.table-style-two th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #517994;
+	background-color: #B2CFD8;
+}
+
+table.table-style-two tr:hover td {
+	background-color: #DFEBF1;
+}
+
+table.table-style-two td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #517994;
+	background-color: #ffffff;
+}
+
+form.form-style-two {
+	font-family: verdana, arial, sans-serif;
+	color: #333333;
+}
+
+/* Disable properties specified in the imported CSS file */
+.menu a {
+	border:none;
+	font-weight:normal;
+}
+/* Actual menu CSS starts here */
+.menu,
+.menu ul {
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+.menu {}
+.menu li {
+	display:block;
+	margin:0;
+	padding:0;
+	margin-bottom:1px;
+}
+.menu a {
+	display:block;
+	padding:2px 5px;
+	color:#000;
+	background:#B2CFD8;
+	text-decoration:none;
+}
+.menu a:hover,
+.menu a:focus,
+.menu a:active {background:#d9dcb0;}
+.menu ul li {padding-left:15px;}
+.menu ul a {background:#B2CFD8;}
+.hidden {display:none;}

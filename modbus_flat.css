@@ -1,0 +1,13 @@
+table.table-style-two {
+	font-family: verdana, arial, sans-serif;
+	font-size: 14px;
+	border-collapse: collapse;
+}
+
+table.table-style-two td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #517994;
+	background-color: #ffffff;
+}
