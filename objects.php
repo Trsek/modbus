@@ -19,8 +19,16 @@ function rotOrder($cut_str, $len)
 */
 function substr_cut(&$SMS, $len)
 {
-	$cut_str = substr($SMS, 0, 2*$len);
-	$SMS = substr($SMS, 2*$len, strlen($SMS) - 2*$len);
+	if( $len < 0 )
+	{
+		$cut_str = substr($SMS, 2*$len);
+		$SMS = substr($SMS, 0, strlen($SMS) + 2*$len);	// $len je -
+	}
+	else
+	{
+		$cut_str = substr($SMS, 0, 2*$len);
+		$SMS = substr($SMS, 2*$len, strlen($SMS) - 2*$len);
+	}
 	return $cut_str;
 }
 

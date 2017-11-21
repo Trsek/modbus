@@ -1,6 +1,7 @@
 <?php
 require_once("crc/crc.php");
 require_once("funct/funct.php");
+require_once("funct/force_coil.php");
 require_once("objects.php");
 
 /********************************************************************
@@ -9,13 +10,27 @@ require_once("objects.php");
 function MODBUS_NORMALIZE($FRAME)
 {
 	$FRAME = strtoupper($FRAME);
+	foreach(explode("\n", $FRAME) as $FRAME_LINE)
+	{
+		// od prasete
+		if( ( $poz = strpos($FRAME_LINE, 'X:')) > 0 ) {
+			$poz += 2;
+			$FRAME_LINE = substr($FRAME_LINE, $poz, strlen($FRAME_LINE) - $poz);
+		}
+		
+		// strip all spaces
+		$FRAME_LINE = str_replace(' ', '', $FRAME_LINE);
+		$FRAME_LINE = str_replace(':', '', $FRAME_LINE);
+		$FRAME_LINE = str_replace("\r", '', $FRAME_LINE);
+		$FRAME_LINE = str_replace("\t", '', $FRAME_LINE);
+		$FRAME_LINE = str_replace("0x", '', $FRAME_LINE);
+		
+		// reamain something
+		if( !empty($FRAME_LINE))
+			$FRAME_OUT[] = $FRAME_LINE;
+	}
 	
-	// strip all spaces
-	$FRAME = str_replace(' ', '', $FRAME);
-	$FRAME = str_replace(':', '', $FRAME);
-	$FRAME = str_replace("\r", '', $FRAME);
-	$FRAME = str_replace("\n\n", '\n', $FRAME);
-	$FRAME = str_replace("0x", '', $FRAME);
+	$FRAME = implode("\n", $FRAME_OUT);
 	return $FRAME;
 }
 
@@ -69,7 +84,7 @@ function modbus_array_show($value)
 function modbus_show_packet($FRAME, &$disp)
 {
 	$FRAME_OUT = modbus_analyze_frame($FRAME);
-	$disp = $FRAME_OUT['FUNCT'];
+	$disp = $FRAME_OUT['FUNCT'][0];
 
 	$out  = "<table class='table-style-two'>\n";
 	foreach ($FRAME_OUT as $name => $value)
@@ -96,7 +111,7 @@ function modbus_show($FRAME)
 	
 	// single line
 	if( count($FRAME) <= 1)
-		return modbus_show_packet($FRAME[0]);
+		return modbus_show_packet($FRAME[0], $disp);
 	
 	// multi line
 	$first = true;
@@ -131,18 +146,52 @@ function modbus_CRCCheck($crc_compute, $crc)
 */
 function modbus_analyze_frame(&$FRAME)
 {
-	$crc_compute = CRC_MODBUS(substr($FRAME, 0, strlen($FRAME)-4));
+	$crc         = substr_cut($FRAME, -2);
+	$crc_compute = CRC_MODBUS($FRAME);
 	
-	$FRAME_DATI['ID']      = substr_cut($FRAME, 1);
-	$FRAME_DATI['FUNCT']   = hexdec(substr_cut($FRAME, 1));
-	$FRAME_DATI['ADDRESS'] = hexdec(substr_cut($FRAME, 2));	
-	$FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2));	
-	$FRAME_DATI['DATA']    = substr_cut($FRAME, (STRLEN($FRAME)-4)/2);
-	$FRAME_DATI['CRC']     = modbus_CRCCheck($crc_compute, substr_cut($FRAME, 2));
+	$FRAME_DATI['ID']    = substr_cut($FRAME, 1);
+	$FRAME_DATI['FUNCT'] = hexdec(substr_cut($FRAME, 1));	
+
+	$funct_id = $FRAME_DATI['FUNCT'];
+	switch( $funct_id )
+	{
+		case MODBUS_FORCE_COIL:
+			$FRAME_DATI['ADDRESS'] = hexdec(substr_cut($FRAME, 2));
+			$answer = analyze_force_coil($FRAME, $FRAME_DATI['ADDRESS']);
+			break;
+				
+		case MODBUS_WRITE_REGISTER:
+			$FRAME_DATI['ADDRESS'] = hexdec(substr_cut($FRAME, 2));
+			$FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2));
+			if( !empty($FRAME))
+				$answer[] = substr_cut($FRAME, 1) .'h - wool';
+			break;
+			
+		case MODBUS_READ_COIL:
+		case MODBUS_READ_INPUT:
+		case MODBUS_READ_HOLD_REG:
+		case MODBUS_READ_INPUT_REG:
+		case MODBUS_SERVER_ID:
+		case MODBUS_READ_FILE_REC:
+		case MODBUS_TUNEL:
+			$FRAME_DATI['ADDRESS'] = hexdec(substr_cut($FRAME, 2));
+			$FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2));
+			break;
+			
+		default:
+			if( $funct_id & 0x80 )
+				$answer = analyze_error($FRAME);
+			break;
+	}
 	
-	$FRAME_DATI['FUNCT']   = modbus_funct_name($FRAME_DATI['FUNCT']);
-	if( empty($FRAME_DATI['DATA']))
-		unset($FRAME_DATI['DATA']);
+	if( !empty($FRAME))	
+		$answer[] = $FRAME;
+	
+	if( !empty($answer))	
+		$FRAME_DATI['DATA'] = $answer;
+	
+	$FRAME_DATI['FUNCT'] = modbus_funct_name($funct_id);
+	$FRAME_DATI['CRC']   = modbus_CRCCheck($crc_compute, $crc);
 	
 	return $FRAME_DATI;
 }
