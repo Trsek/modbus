@@ -10,6 +10,7 @@ require_once("objects.php");
 function MODBUS_NORMALIZE($FRAME)
 {
 	$FRAME = strtoupper($FRAME);
+	$FRAME_OUT = "";
 	foreach(explode("\n", $FRAME) as $FRAME_LINE)
 	{
 		// od prasete

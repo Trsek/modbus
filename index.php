@@ -34,7 +34,7 @@ F8030000002851BD";
 	
 	// pre app
 	if( isset($_REQUEST["FLAT"])) {
-		echo "<head><link rel='stylesheet' href='modbus_flat.css'></head>";
+		echo "<head><meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'><link rel='stylesheet' href='modbus_flat.css'></head>";
 		echo modbus_show($MODBUS_FRAME);
 		return;
 	}
