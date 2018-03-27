@@ -174,11 +174,19 @@ function modbus_analyze_frame(&$FRAME)
 		case MODBUS_READ_INPUT_REG:
 		case MODBUS_SERVER_ID:
 		case MODBUS_READ_FILE_REC:
-		case MODBUS_TUNEL:
 			$FRAME_DATI['ADDRESS'] = hexdec(substr_cut($FRAME, 2));
 			$FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2));
 			break;
-			
+
+		case MODBUS_TUNEL:
+			$FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2));
+			$type  = hexdec( substr_cut($FRAME, 1));
+			$group = hexdec( substr_cut($FRAME, 1));
+			$port  = hexdec( substr_cut($FRAME, 1));
+			$answer[] = json_decode( file_get_contents('http://'. $_SERVER['SERVER_NAME']. '/elgas2/index.php?JSON&ELGAS_FRAME='. $FRAME. '&GROUP='. $group. '&TYPE='. $type));
+			unset($FRAME);
+			break;
+					
 		default:
 			if( $funct_id & 0x80 )
 				$answer = analyze_error($FRAME);
