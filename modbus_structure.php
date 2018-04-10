@@ -31,7 +31,9 @@ function MODBUS_NORMALIZE($FRAME)
 			$FRAME_OUT[] = $FRAME_LINE;
 	}
 	
-	$FRAME = implode("\n", $FRAME_OUT);
+	if( is_array($FRAME_OUT))
+		$FRAME = implode("\n", $FRAME_OUT);
+	
 	return $FRAME;
 }
 
@@ -179,7 +181,7 @@ function modbus_analyze_frame(&$FRAME)
 			break;
 
 		case MODBUS_TUNEL:
-			$FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2));
+			$FRAME_DATI['LENGTH']  = hexdec(rotOrder(substr_cut($FRAME, 2),2));
 			$type  = hexdec( substr_cut($FRAME, 1));
 			$group = hexdec( substr_cut($FRAME, 1));
 			$port  = hexdec( substr_cut($FRAME, 1));
