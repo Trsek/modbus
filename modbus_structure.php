@@ -88,6 +88,7 @@ function modbus_show_packet($FRAME, &$disp)
 {
 	$FRAME_OUT = modbus_analyze_frame($FRAME);
 	$disp = $FRAME_OUT['FUNCT'][0];
+	if( strpos($FRAME_OUT['CRC'], 'OK') == false ) $disp .= ' (bad CRC)';
 
 	$out  = "<table class='table-style-two'>\n";
 	foreach ($FRAME_OUT as $name => $value)
