@@ -53,6 +53,17 @@ function add_soft_space($DATI, $len)
 }
 
 /********************************************************************
+ * @brief Make directory of packet
+ */
+function show_dir($to_device)
+{
+    $smer = "";
+    if( $to_device === true ) $smer = ">> ";
+    if( $to_device === false ) $smer = "<< ";
+    return $smer;
+}
+
+/********************************************************************
 * @brief Make HTML format from array
 * @retval HTML format divide by <br>
 */
@@ -86,8 +97,8 @@ function modbus_array_show($value)
  */
 function modbus_show_packet($FRAME, &$disp)
 {
-	$FRAME_OUT = modbus_analyze_frame($FRAME);
-	$disp = $FRAME_OUT['FUNCT'][0];
+	$FRAME_OUT = modbus_analyze_frame($FRAME, $to_device);
+	$disp = show_dir($to_device). $FRAME_OUT['FUNCT'][0];
 	if( strpos($FRAME_OUT['CRC'], 'OK') == false ) $disp .= ' (bad CRC)';
 
 	$out  = "<table class='table-style-two'>\n";
@@ -137,10 +148,10 @@ function modbus_show($FRAME)
 */
 function modbus_CRCCheck($crc_compute, $crc)
 {
-	if( $crc_compute == $crc )
-		$answ = "$crc - OK";
+	if( $crc_compute === $crc )
+		$answ = $crc .'h - OK';
 	else
-		$answ = "$crc - bad, correctly $crc_compute";
+		$answ = $crc .'h - bad, correctly '. $crc_compute .'h';
 				
 	return $answ;
 }
@@ -148,27 +159,38 @@ function modbus_CRCCheck($crc_compute, $crc)
 /********************************************************************
 * @brief MetaAnalyze frame name
 */
-function modbus_analyze_frame(&$FRAME)
+function modbus_analyze_frame(&$FRAME, &$to_device)
 {
 	$crc         = substr_cut($FRAME, -2);
 	$crc_compute = CRC_MODBUS($FRAME);
 	
-	$FRAME_DATI['ID']    = substr_cut($FRAME, 1);
+	$to_device = none;
+	$FRAME_DATI['ID']    = substr_cut($FRAME, 1) .'h';
 	$FRAME_DATI['FUNCT'] = hexdec(substr_cut($FRAME, 1));	
 
 	$funct_id = $FRAME_DATI['FUNCT'];
 	switch( $funct_id )
 	{
 		case MODBUS_FORCE_COIL:
-			$FRAME_DATI['ADDRESS'] = hexdec(substr_cut($FRAME, 2));
-			$answer = analyze_force_coil($FRAME, $FRAME_DATI['ADDRESS']);
+		    $FRAME_DATI['ADDRESS'] = substr_cut($FRAME, 2) .'h';
+		    $answer = analyze_force_coil($FRAME, $FRAME_DATI['ADDRESS']);
 			break;
 				
 		case MODBUS_WRITE_REGISTER:
-			$FRAME_DATI['ADDRESS'] = hexdec(substr_cut($FRAME, 2));
-			$FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2));
-			if( !empty($FRAME))
-				$answer[] = substr_cut($FRAME, 1) .'h - wool';
+		    if( strlen($FRAME) != 8 )
+		    {
+		        $to_device = true;
+		        $FRAME_DATI['ADDRESS'] = substr_cut($FRAME, 2) .'h';
+		        $FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2)) .' word';
+		        if( !empty($FRAME))
+		            $answer[] = substr_cut($FRAME, 1) .'h - wool';
+		    }
+		    else
+		    {
+		        $to_device = false;
+		        $FRAME_DATI['ADDRESS'] = substr_cut($FRAME, 2) .'h';
+		        $FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2)) .' word';
+		    }
 			break;
 			
 		case MODBUS_READ_COIL:
@@ -177,8 +199,17 @@ function modbus_analyze_frame(&$FRAME)
 		case MODBUS_READ_INPUT_REG:
 		case MODBUS_SERVER_ID:
 		case MODBUS_READ_FILE_REC:
-			$FRAME_DATI['ADDRESS'] = hexdec(substr_cut($FRAME, 2));
-			$FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2));
+		    if( strlen($FRAME) == 8 )
+		    {
+		        $to_device = true;
+		        $FRAME_DATI['ADDRESS'] = substr_cut($FRAME, 2) .'h';
+		        $FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 2)) .' word';
+		    }
+		    else
+		    {
+		        $to_device = false;
+		        $FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 1)) .' byte';
+		    }
 			break;
 
 		case MODBUS_TUNEL:
