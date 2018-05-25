@@ -28,14 +28,14 @@ F8030000002851BD";
 14:17:41.12 RX: F8 90 04 9D F2 
 14:18:07.07 TX: F8 10 01 2B 00 02 04 00 04 05 05 12 99 
 14:18:10.02 RX: F8 10 01 2B 00 02 24 55";
-  		$_REQUEST["MODBUS_FRAME"] = "F09001DC33";
+  		$_REQUEST["MODBUS_FRAME"] = "F005002EFF00xxxx";
 	}
 
 	$MODBUS_FRAME = MODBUS_NORMALIZE($_REQUEST["MODBUS_FRAME"]);
 	
 	// pre json
 	if( isset($_REQUEST["JSON"])) {
-	    echo json_encode( modbus_analyze_frame($MODBUS_FRAME));
+	    echo json_encode( modbus_analyze_frame($MODBUS_FRAME,$DIR));
 	    return;
 	}
 
