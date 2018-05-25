@@ -99,6 +99,7 @@ function modbus_show_packet($FRAME, &$disp)
 {
 	$FRAME_OUT = modbus_analyze_frame($FRAME, $to_device);
 	$disp = show_dir($to_device). $FRAME_OUT['FUNCT'][0];
+	if( isset($FRAME_OUT['ADDRESS'])) $disp .= ' ('. $FRAME_OUT['ADDRESS'] .')';
 	if( strpos($FRAME_OUT['CRC'], 'OK') == false ) $disp .= ' (bad CRC)';
 
 	$out  = "<table class='table-style-two'>\n";
