@@ -5,9 +5,9 @@ require_once("funct/force_coil.php");
 require_once("objects.php");
 
 /********************************************************************
-* @brief Remove 0A/0D if have it. Remove SMS prefix if have it
+* @brief Remove 0A/0D if have it.
 */
-function MODBUS_NORMALIZE($FRAME)
+function MODBUS_NORMALIZE($FRAME, $strict)
 {
 	$FRAME = strtoupper($FRAME);
 	$FRAME_OUT = "";
@@ -26,6 +26,10 @@ function MODBUS_NORMALIZE($FRAME)
 		$FRAME_LINE = str_replace("\t", '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("0x", '', $FRAME_LINE);
 		
+		// je prisny rezim, len pakety obsahujuce hex znaky
+		if( $strict && !ctype_xdigit($FRAME_LINE))
+		    $FRAME_LINE = "";
+
 		// reamain something
 		if( !empty($FRAME_LINE))
 			$FRAME_OUT[] = $FRAME_LINE;
@@ -98,6 +102,7 @@ function modbus_array_show($value)
 function modbus_show_packet($FRAME, &$disp)
 {
 	$FRAME_OUT = modbus_analyze_frame($FRAME, $to_device);
+
 	$disp = show_dir($to_device). $FRAME_OUT['FUNCT'][0];
 	if( isset($FRAME_OUT['ADDRESS'])) $disp .= ' ('. $FRAME_OUT['ADDRESS'] .')';
 	if( strpos($FRAME_OUT['CRC'], 'OK') == false ) $disp .= ' (bad CRC)';
@@ -173,8 +178,9 @@ function modbus_analyze_frame(&$FRAME, &$to_device)
 	switch( $funct_id )
 	{
 		case MODBUS_FORCE_COIL:
-		    $FRAME_DATI['ADDRESS'] = substr_cut($FRAME, 2) .'h';
-		    $answer = analyze_force_coil($FRAME, $FRAME_DATI['ADDRESS']);
+		    $address = substr_cut($FRAME, 2);
+		    $FRAME_DATI['ADDRESS'] = $address .'h';
+		    $answer = analyze_force_coil($FRAME, $address);
 			break;
 				
 		case MODBUS_WRITE_REGISTER:

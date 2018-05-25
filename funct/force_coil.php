@@ -14,16 +14,16 @@ define (MODFTPKLIENT,      0x31);      // inicializace klienta ftp, nastavi poca
 $force_coil_code =
 array(
 		MODRESET           => array('MASTER reset'),
-		MODUNLOCKUSER      => array('odemknuti uzivatelske sekce'),
-		MODUNLOCKMETROLOG  => array('odemknuti metrologicke sekce'),
-		MODCLEARDATA       => array('nulovani datoveho archivu'),
-		MODCLEARDAY        => array('nulovani denniho archivu'),
-		MODCLEARMONTH      => array('nulovani mesicniho archivu'),
-		MODCLEAREXTREM     => array('nulovani archivu extremu'),
-		MODCLEARBINAR      => array('nulovani binarniho archivu'),
-		MODINITSTATUS      => array('nulovani souctoveho statusu'),
-		MODSTARTTEST       => array('spusteni testu pristroje'),
-		MODFTPKLIENT       => array('inicializace klienta ftp, nastavi pocatecni cas, ktery bude odeslan v pristi session'),
+		MODUNLOCKUSER      => array('Odemknuti uzivatelske sekce'),
+		MODUNLOCKMETROLOG  => array('Odemknuti metrologicke sekce'),
+		MODCLEARDATA       => array('Nulovani datoveho archivu'),
+		MODCLEARDAY        => array('Nulovani denniho archivu'),
+		MODCLEARMONTH      => array('Nulovani mesicniho archivu'),
+		MODCLEAREXTREM     => array('Nulovani archivu extremu'),
+		MODCLEARBINAR      => array('Nulovani binarniho archivu'),
+		MODINITSTATUS      => array('Nulovani souctoveho statusu'),
+		MODSTARTTEST       => array('Spusteni testu pristroje'),
+		MODFTPKLIENT       => array('Inicializace klienta ftp, nastavi pocatecni cas, ktery bude odeslan v pristi session'),
  );
 		
 
@@ -37,10 +37,10 @@ function analyze_force_coil(&$FRAME, $address)
 
 	if( substr_cut($FRAME, 2) == "FF00" )
 	{
-		if( !empty($force_coil_code[$address]))
-			$answer[] = dechex($address) . 'h - '. $force_coil_code[$address][0];
+	    if( !empty($force_coil_code[hexdec($address)]))
+	        $answer[] = 'FF00h - '. $force_coil_code[hexdec($address)][0];
 		else
-			$answer[] = dechex($address) . 'h - run action at address '. $address;
+		    $answer[] = 'FF00h - Run action at address '. $address .'h';
 		
 	}
 

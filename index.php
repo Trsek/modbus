@@ -28,10 +28,11 @@ F8030000002851BD";
 14:17:41.12 RX: F8 90 04 9D F2 
 14:18:07.07 TX: F8 10 01 2B 00 02 04 00 04 05 05 12 99 
 14:18:10.02 RX: F8 10 01 2B 00 02 24 55";
-  		$_REQUEST["MODBUS_FRAME"] = "F005002EFF00xxxx";
+  		$_REQUEST["MODBUS_FRAME"] = "F0050011 FF00 C91E";
 	}
 
-	$MODBUS_FRAME = MODBUS_NORMALIZE($_REQUEST["MODBUS_FRAME"]);
+	$strict = !empty($_POST["Strict"]);
+	$MODBUS_FRAME = MODBUS_NORMALIZE($_REQUEST["MODBUS_FRAME"], $strict);
 	
 	// pre json
 	if( isset($_REQUEST["JSON"])) {
@@ -64,6 +65,7 @@ F8030000002851BD";
 <form action='index.php' method='post' ENCTYPE='multipart/form-data' class='form-style-two'>
 	Packet (hex format)<br>
 	<textarea name='MODBUS_FRAME' rows="9" cols="63"><?php echo $MODBUS_FRAME;?></textarea><br>
+	Strict Mode <input type='checkbox' name='Strict' <?php if($strict) echo 'checked=on';?>'><br><br>
 	<input type='submit' name='analyze' value='analyze'><br>
 </form>
 	
