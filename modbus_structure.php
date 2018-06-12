@@ -5,7 +5,20 @@ require_once("funct/force_coil.php");
 require_once("objects.php");
 
 /********************************************************************
-* @brief Remove 0A/0D if have it.
+ * @brief Is time format
+ */
+function isValidDateTimeString($str_dt)
+{
+    $str_dateformat = 'H:i:s';
+    $str_timezone = date_default_timezone_get();
+    
+    $date = DateTime::createFromFormat($str_dateformat, $str_dt, new DateTimeZone($str_timezone));
+    $laste = DateTime::getLastErrors();
+    return $date && $laste["warning_count"] == 0 && $laste["error_count"] == 0;
+}
+
+/********************************************************************
+* @brief Remove noncorrect chars.
 */
 function MODBUS_NORMALIZE($FRAME, $strict)
 {
@@ -19,13 +32,17 @@ function MODBUS_NORMALIZE($FRAME, $strict)
 			$FRAME_LINE = substr($FRAME_LINE, $poz, strlen($FRAME_LINE) - $poz);
 		}
 		
+		// s casovou znackou od telvesu
+		if( isValidDateTimeString( substr($FRAME_LINE, 1, 8)))
+		    $FRAME_LINE = substr($FRAME_LINE, 9);
+
 		// strip all spaces
 		$FRAME_LINE = str_replace(' ', '', $FRAME_LINE);
 		$FRAME_LINE = str_replace(':', '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("\r", '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("\t", '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("0x", '', $FRAME_LINE);
-		
+
 		// je prisny rezim, len pakety obsahujuce hex znaky
 		if( $strict && !ctype_xdigit($FRAME_LINE))
 		    $FRAME_LINE = "";
@@ -224,6 +241,7 @@ function modbus_analyze_frame(&$FRAME, &$to_device)
 			$type  = hexdec( substr_cut($FRAME, 1));
 			$group = hexdec( substr_cut($FRAME, 1));
 			$port  = hexdec( substr_cut($FRAME, 1));
+			$to_device = ($type == 0x84)? true: false;
 			$answer[] = json_decode( file_get_contents('http://'. $_SERVER['HTTP_HOST']. '/elgas2/index.php?JSON&ELGAS_FRAME='. $FRAME. '&GROUP='. $group. '&TYPE='. $type), true);
 			unset($FRAME);
 			break;
