@@ -45,11 +45,11 @@ define (m_IlegDevBusy,   0x06);
 
 $funct_code = 
 	array(
-			MODBUS_READ_COIL      => array('Read coil status'),
-			MODBUS_READ_INPUT     => array('Read input status'),
-			MODBUS_READ_HOLD_REG  => array('Read holding registers'),
-			MODBUS_READ_INPUT_REG => array('Read input registers'),
-			MODBUS_FORCE_COIL     => array('Force single coil'),
+	        MODBUS_READ_COIL      => array('Read coil status'),
+	        MODBUS_READ_INPUT     => array('Read input status'),
+	        MODBUS_READ_HOLD_REG  => array('Read holding registers'),
+	        MODBUS_READ_INPUT_REG => array('Read input registers'),
+	        MODBUS_FORCE_COIL     => array('Force single coil'),
 	        MODBUS_06             => array('Preset Single Register'),
 	        MODBUS_07             => array('Read Exception Status'),
 	        MODBUS_08             => array('Diagnostics'),
@@ -61,8 +61,8 @@ $funct_code =
 	        MODBUS_0E             => array('Poll Controller'),
 	        MODBUS_0F             => array('Force Multiple Coils'),
 	        MODBUS_WRITE_REGISTER => array('Write holding registers'),
-			MODBUS_SERVER_ID      => array('Report Server ID'),
-			MODBUS_READ_FILE_REC  => array('Read File Record'),
+	        MODBUS_SERVER_ID      => array('Report Server ID'),
+	        MODBUS_READ_FILE_REC  => array('Read File Record'),
 	        MODBUS_15             => array('Write General Reference'),
 	        MODBUS_16             => array('Mask Write 4X Registers'),
 	        MODBUS_17             => array('Read/Write 4X Registers'),
@@ -84,11 +84,11 @@ $funct_code =
 
 $error_code =
 	array(
-			m_IlegFunc      => array('Illegal function'),
-			m_IlegDataAdr   => array('Illegal data address'),
-			m_IlegDataVal   => array('Illegal data value'),
-			m_IlegSlaveFail => array('Slave system fail'),
-			m_IlegDevBusy   => array('Device bussy'),
+	        m_IlegFunc      => array('Illegal function'),
+	        m_IlegDataAdr   => array('Illegal data address'),
+	        m_IlegDataVal   => array('Illegal data value'),
+	        m_IlegSlaveFail => array('Slave system fail'),
+	        m_IlegDevBusy   => array('Device bussy'),
     );
 
 /********************************************************************
