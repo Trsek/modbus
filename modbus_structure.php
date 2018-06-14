@@ -26,23 +26,29 @@ function MODBUS_NORMALIZE($FRAME, $strict)
 	$FRAME_OUT = "";
 	foreach(explode("\n", $FRAME) as $FRAME_LINE)
 	{
-		// od prasete
+	    // od prasete
 		if( ( $poz = strpos($FRAME_LINE, 'X:')) > 0 ) {
 			$poz += 2;
 			$FRAME_LINE = substr($FRAME_LINE, $poz, strlen($FRAME_LINE) - $poz);
 		}
-		
+		    
 		// s casovou znackou od telvesu
 		if( isValidDateTimeString( substr($FRAME_LINE, 1, 8)))
 		    $FRAME_LINE = substr($FRAME_LINE, 9);
-
+		    
+		// je prisny rezim, kde zacina 0x
+		if( $strict && ($poz = strpos($FRAME_LINE, '0X')) > 0)
+		    $FRAME_LINE = substr($FRAME_LINE, $poz, strlen($FRAME_LINE) - $poz);
+		
 		// strip all spaces
 		$FRAME_LINE = str_replace(' ', '', $FRAME_LINE);
 		$FRAME_LINE = str_replace(':', '', $FRAME_LINE);
+		$FRAME_LINE = str_replace('.', '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("\r", '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("\t", '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("0x", '', $FRAME_LINE);
-
+		$FRAME_LINE = str_replace("0X", '', $FRAME_LINE);
+		
 		// je prisny rezim, len pakety obsahujuce hex znaky
 		if( $strict && !ctype_xdigit($FRAME_LINE))
 		    $FRAME_LINE = "";
@@ -252,6 +258,9 @@ function modbus_analyze_frame(&$FRAME, &$to_device)
 			break;
 	}
 	
+	if( !empty($FRAME_DATI['ADDRESS']))
+	    $FRAME_DATI['ADDRESS'] .= " -> ". (40001 + hexdec(substr($FRAME_DATI['ADDRESS'], 0, -1)));
+	    
 	if( !empty($FRAME))	
 		$answer[] = $FRAME;
 	
