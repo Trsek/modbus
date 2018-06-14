@@ -127,7 +127,7 @@ function modbus_show_packet($FRAME, &$disp)
 	$FRAME_OUT = modbus_analyze_frame($FRAME, $to_device);
 
 	$disp = show_dir($to_device). $FRAME_OUT['FUNCT'][0];
-	if( isset($FRAME_OUT['ADDRESS'])) $disp .= ' ('. $FRAME_OUT['ADDRESS'] .')';
+	if( isset($FRAME_OUT['ADDRESS'])) $disp .= ' ('. substr($FRAME_OUT['ADDRESS'],0,5) .')';
 	if( strpos($FRAME_OUT['CRC'], 'OK') == false ) $disp .= ' (bad CRC)';
 
 	$out  = "<table class='table-style-two'>\n";
@@ -183,6 +183,34 @@ function modbus_CRCCheck($crc_compute, $crc)
 		$answ = $crc .'h - bad, correctly '. $crc_compute .'h';
 				
 	return $answ;
+}
+
+/********************************************************************
+ * @brief Mozne formaty cisla
+ */
+function MODBUS_POSSIBLE($data)
+{
+    $len = strlen($data)/2;
+    $answer[] = $data .'h';
+    
+    switch ($len)
+    {
+        case 1: $answer[] = ' - byte = '. hexdec($data); break;
+        case 2: $answer[] = ' - int  = '. hexdec($data); break;
+        case 4: $answer[] = ' - ulong = '. hexdec($data); 
+                $answer[] = ' - float = '. hexFloat(rotOrder($data,4));
+                $answer[] = ' - str = '. htmlspecialchars(hexToStr($data), ENT_COMPAT,'ISO-8859-1', true);
+                break;
+        case 8: $answer[] = ' - dlong = '. hexdec($data);
+                $answer[] = ' - double = '. hexDouble(rotOrder($data,8));
+                $answer[] = ' - str = '. htmlspecialchars(hexToStr($data), ENT_COMPAT,'ISO-8859-1', true);
+                break;
+        default:
+                $answer[] = ' - str = '. htmlspecialchars(hexToStr($data), ENT_COMPAT,'ISO-8859-1', true);
+                break;
+    }
+    
+    return $answer;
 }
 
 /********************************************************************
@@ -261,8 +289,8 @@ function modbus_analyze_frame(&$FRAME, &$to_device)
 	if( !empty($FRAME_DATI['ADDRESS']))
 	    $FRAME_DATI['ADDRESS'] .= " -> ". (40001 + hexdec(substr($FRAME_DATI['ADDRESS'], 0, -1)));
 	    
-	if( !empty($FRAME))	
-		$answer[] = $FRAME;
+    if( !empty($FRAME))
+        $answer[] = MODBUS_POSSIBLE($FRAME);
 	
 	if( !empty($answer))	
 		$FRAME_DATI['DATA'] = $answer;

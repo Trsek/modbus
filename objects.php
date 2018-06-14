@@ -85,5 +85,23 @@ function array_val_line($value)
 	return $answer;
 }
 
+/********************************************************************
+ * @brief Hex convert to float format
+ */
+function hexFloat(&$DATI, $deci = 9)
+{
+    $fnumber = unpack("f", pack('H*',str_pad($DATI,8,"0")));
+    return round($fnumber[1], $deci);
+}
+
+/********************************************************************
+ * @brief Hex convert to double
+ */
+function hexDouble(&$DATI)
+{
+    $fnumber = unpack("d", pack('H*',str_pad($DATI,16,"0")));
+    return $fnumber[1];
+}
+
 /*----------------------------------------------------------------------------*/
 /* END OF FILE */
