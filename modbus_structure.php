@@ -199,17 +199,13 @@ function MODBUS_POSSIBLE($data)
         case 2: $answer[] = ' - int  = '. hexdec($data); break;
         case 4: $answer[] = ' - ulong = '. hexdec($data); 
                 $answer[] = ' - float = '. hexFloat(rotOrder($data,4));
-                $answer[] = ' - str = '. htmlspecialchars(hexToStr($data), ENT_COMPAT,'ISO-8859-1', true);
                 break;
         case 8: $answer[] = ' - dlong = '. hexdec($data);
                 $answer[] = ' - double = '. hexDouble(rotOrder($data,8));
-                $answer[] = ' - str = '. htmlspecialchars(hexToStr($data), ENT_COMPAT,'ISO-8859-1', true);
-                break;
-        default:
-                $answer[] = ' - str = '. htmlspecialchars(hexToStr($data), ENT_COMPAT,'ISO-8859-1', true);
                 break;
     }
     
+    $answer[] = ' - str = '. htmlspecialchars(hexToStr($data), ENT_COMPAT,'ISO-8859-1', true);
     return $answer;
 }
 
