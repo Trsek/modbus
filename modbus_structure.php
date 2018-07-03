@@ -199,6 +199,7 @@ function MODBUS_POSSIBLE($data)
         case 2: $answer[] = ' - int  = '. hexdec($data); break;
         case 4: $answer[] = ' - ulong = '. hexdec($data); 
                 $answer[] = ' - float = '. hexFloat(rotOrder($data,4));
+                $answer[] = ' - dt3 = '. modbus_actTime($data);
                 break;
         case 8: $answer[] = ' - dlong = '. hexdec($data);
                 $answer[] = ' - double = '. hexDouble(rotOrder($data,8));

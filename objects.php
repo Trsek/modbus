@@ -1,4 +1,6 @@
 <?php
+define(DATEOFFSET1970, 946684800);
+
 /********************************************************************
  * @brief Rot hex to other endian
  */
@@ -67,6 +69,53 @@ function modbus_date($DATI)
 	$data_year   = hexdec(substr_cut($DATI, 1))+2000;	
 	
 	return sprintf("%04d-%02d-%02d %02d:%02d:%02d", $data_year, $data_month, $data_day, $data_hour, $data_minute, $data_second);
+}
+
+/********************************************************************
+ * @brief Modbus date presentation as long
+ */
+function modbus_actTime(&$DATI)
+{
+    $C_MONTH  = array(0,31,59,90,120,151,181,212,243,273,304,334,365,0);
+    $C_MONTHP = array(0,31,60,91,121,152,182,213,244,274,305,335,366,0);
+    
+    $actTime = hexdec(substr_cut($DATI,4,true)) - DATEOFFSET1970;
+    
+    $second = $actTime % 60;	$actTime = (int)($actTime / 60);		// je to v min
+    $minute = $actTime % 60;	$actTime = (int)($actTime / 60);		// je to v hod
+    $hour   = $actTime % 24;	$actTime = (int)($actTime / 24);		// je to v dnech
+    $year   = (int)($actTime / 365);
+    
+    $days = (int)((365 * $year + ($year / 4) + (($year % 4)? 1: 0)));
+    if ( $actTime < days )
+    {
+        $year -= 1;
+        $days = (int)((365 * $year + ($year / 4) + (($year % 4)? 1: 0)));
+    }
+    $actTime -= $days;
+    $j = 0;
+    if ( $year % 4 )     // normalni roky
+    {
+        while ( $C_MONTH[$j] <= $actTime ) {
+            $j++;
+        }
+        $j--;
+        $month = $j;
+        $day = $actTime - $C_MONTH[$j];
+    }
+    else                            // prestupny rok
+    {
+        while ( $C_MONTHP[$j] <= $actTime ) {
+            $j++;
+        }
+        $j--;
+        $month = $j;
+        $day = $actTime - $C_MONTHP[$j];
+    }
+    $day += 1;
+    $month += 1;
+    
+    return sprintf("20%02d-%02d-%02d %02d:%02d:%02d", $year, $month, $day, $hour, $minute, $second);
 }
 
 /********************************************************************
