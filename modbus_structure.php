@@ -23,7 +23,7 @@ function isValidDateTimeString($str_dt)
 function MODBUS_NORMALIZE($FRAME, $strict)
 {
 	$FRAME = strtoupper($FRAME);
-	$FRAME_OUT = "";
+	$FRAME_OUT = [];
 	foreach(explode("\n", $FRAME) as $FRAME_LINE)
 	{
 	    // od prasete
@@ -44,6 +44,7 @@ function MODBUS_NORMALIZE($FRAME, $strict)
 		$FRAME_LINE = str_replace(' ', '', $FRAME_LINE);
 		$FRAME_LINE = str_replace(':', '', $FRAME_LINE);
 		$FRAME_LINE = str_replace('.', '', $FRAME_LINE);
+		$FRAME_LINE = str_replace('-', '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("\r", '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("\t", '', $FRAME_LINE);
 		$FRAME_LINE = str_replace("0x", '', $FRAME_LINE);

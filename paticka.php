@@ -1,6 +1,6 @@
 <?php
 	// write to log
-	define("_BBC_PAGE_NAME", substr($MODBUS_FRAME, 0, 30));
+	define("_BBC_PAGE_NAME", substr(":".$MODBUS_FRAME, 0, 30));
 	define("_BBCLONE_DIR", "bbclone/");
 	define("_BBC_ROOT_PATH", "bbclone/");
 	define("COUNTER", _BBCLONE_DIR."mark_page.php");
