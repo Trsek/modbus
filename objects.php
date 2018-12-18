@@ -76,8 +76,8 @@ function modbus_date($DATI)
  */
 function modbus_actTime(&$DATI)
 {
-    $C_MONTH  = array(0,31,59,90,120,151,181,212,243,273,304,334,365,0);
-    $C_MONTHP = array(0,31,60,91,121,152,182,213,244,274,305,335,366,0);
+    $C_MONTH  = array(0,31,59,90,120,151,181,212,243,273,304,334,365,366);
+    $C_MONTHP = array(0,31,60,91,121,152,182,213,244,274,305,335,366,366);
     
     $actTime = hexdec(substr_cut($DATI,4,true)) - DATEOFFSET1970;
     
@@ -96,7 +96,7 @@ function modbus_actTime(&$DATI)
     $j = 0;
     if ( $year % 4 )     // normalni roky
     {
-        while ( $C_MONTH[$j] <= $actTime ) {
+        while ( $C_MONTH[$j] <= $actTime && $j < sizeof($C_MONTH)) {
             $j++;
         }
         $j--;
@@ -105,7 +105,7 @@ function modbus_actTime(&$DATI)
     }
     else                            // prestupny rok
     {
-        while ( $C_MONTHP[$j] <= $actTime ) {
+        while ( $C_MONTHP[$j] <= $actTime && $j < sizeof($C_MONTHP)) {
             $j++;
         }
         $j--;
