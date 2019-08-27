@@ -220,7 +220,7 @@ function modbus_analyze_frame(&$FRAME, &$to_device)
 	$crc_compute = CRC_MODBUS($FRAME);
 	
 	$to_device = none;
-	$FRAME_DATI['ID']    = substr_cut($FRAME, 1) .'h';
+	$FRAME_DATI['ID']    = substr_cut($FRAME, 1) .'h - Device address';
 	$FRAME_DATI['FUNCT'] = hexdec(substr_cut($FRAME, 1));	
 
 	$funct_id = $FRAME_DATI['FUNCT'];
@@ -294,7 +294,8 @@ function modbus_analyze_frame(&$FRAME, &$to_device)
 		$FRAME_DATI['DATA'] = $answer;
 	
 	$FRAME_DATI['FUNCT'] = modbus_funct_name($funct_id);
-	$FRAME_DATI['CRC']   = modbus_CRCCheck($crc_compute, $crc);
+	if( $crc != 'XXX')
+		$FRAME_DATI['CRC'] = modbus_CRCCheck($crc_compute, $crc);
 	
 	return $FRAME_DATI;
 }
