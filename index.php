@@ -37,7 +37,7 @@ F8030000002851BD";
 	
 	// pre json
 	if( isset($_REQUEST["JSON"])) {
-	    echo json_encode( modbus_analyze_frame($MODBUS_FRAME,$DIR));
+	    echo json_encode( modbus_analyze_frame($MODBUS_FRAME, $DIR));
 	    return;
 	}
 

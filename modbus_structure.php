@@ -192,7 +192,7 @@ function modbus_CRCCheck($crc_compute, $crc)
 function MODBUS_POSSIBLE($data)
 {
     $len = strlen($data)/2;
-    $answer[] = $data .'h';
+    $answer[] = $data .'h - Raw data';
     
     switch ($len)
     {
@@ -294,7 +294,8 @@ function modbus_analyze_frame(&$FRAME, &$to_device)
 		$FRAME_DATI['DATA'] = $answer;
 	
 	$FRAME_DATI['FUNCT'] = modbus_funct_name($funct_id);
-	if( $crc != 'XXXX')
+
+	if( $crc != '????')
 		$FRAME_DATI['CRC'] = modbus_CRCCheck($crc_compute, $crc);
 	
 	return $FRAME_DATI;
