@@ -294,7 +294,7 @@ function modbus_analyze_frame(&$FRAME, &$to_device)
 		$FRAME_DATI['DATA'] = $answer;
 	
 	$FRAME_DATI['FUNCT'] = modbus_funct_name($funct_id);
-	if( $crc != 'XXX')
+	if( $crc != 'XXXX')
 		$FRAME_DATI['CRC'] = modbus_CRCCheck($crc_compute, $crc);
 	
 	return $FRAME_DATI;
