@@ -1,5 +1,5 @@
 <?php
-define(DATEOFFSET1970, 946684800);
+define('DATEOFFSET1970', 946684800);
 
 /********************************************************************
  * @brief Rot hex to other endian
@@ -87,7 +87,7 @@ function modbus_actTime(&$DATI)
     $year   = (int)($actTime / 365);
     
     $days = (int)((365 * $year + ($year / 4) + (($year % 4)? 1: 0)));
-    if ( $actTime < days )
+    if ( $actTime < $days )
     {
         $year -= 1;
         $days = (int)((365 * $year + ($year / 4) + (($year % 4)? 1: 0)));

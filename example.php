@@ -1,6 +1,6 @@
 <?php
-define(MODBUS_WRITE, "Write");
-define(MODBUS_READ,  "Read");
+define('MODBUS_WRITE', "Write");
+define('MODBUS_READ',  "Read");
 
 $example_packet = array(
 	MODBUS_WRITE => "F81000640001020118C1BA",

@@ -70,7 +70,7 @@ function MODBUS_NORMALIZE($FRAME, $strict)
  */
 function add_soft_space($DATI, $len)
 {
-	$asnwer = "";
+	$answer = "";
 	while( strlen($DATI))
 	{	
 		$answer .= substr($DATI, 0, $len) ." ";
@@ -125,6 +125,7 @@ function modbus_array_show($value)
  */
 function modbus_show_packet($FRAME, &$disp)
 {
+	$to_device = false;
 	$FRAME_OUT = modbus_analyze_frame($FRAME, $to_device);
 
 	$disp = show_dir($to_device). $FRAME_OUT['FUNCT'][0];
@@ -153,6 +154,7 @@ function modbus_show_packet($FRAME, &$disp)
 function modbus_show($FRAME)
 {
 	$FRAME = explode("\n", $FRAME);
+	$disp = "";
 	
 	// single line
 	if( count($FRAME) <= 1)
@@ -192,6 +194,7 @@ function modbus_CRCCheck($crc_compute, $crc)
 function MODBUS_POSSIBLE($data)
 {
     $len = strlen($data)/2;
+    $answer = [];
     $answer[] = $data .'h - Raw data';
     
     switch ($len)
@@ -219,7 +222,8 @@ function modbus_analyze_frame(&$FRAME, &$to_device)
 	$crc         = substr_cut($FRAME, -2);
 	$crc_compute = CRC_MODBUS($FRAME);
 	
-	$to_device = none;
+	$to_device = 'none';
+	$FRAME_DATI = [];
 	$FRAME_DATI['ID']    = substr_cut($FRAME, 1) .'h - Device address';
 	$FRAME_DATI['FUNCT'] = hexdec(substr_cut($FRAME, 1));	
 

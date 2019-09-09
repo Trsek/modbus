@@ -1,15 +1,15 @@
 <?php
-define (MODRESET,          0x00);      // MASTER reset
-define (MODUNLOCKUSER,     0x10);      // odemknuti uzivatelske sekce
-define (MODUNLOCKMETROLOG, 0x11);      // odemknuti metrologicke sekce
-define (MODCLEARDATA,      0x24);      // nulovani datoveho archivu
-define (MODCLEARDAY,       0x25);      // nulovani denniho archivu
-define (MODCLEARMONTH,     0x26);      // nulovani mesicniho archivu
-define (MODCLEAREXTREM,    0x27);      // nulovani archivu extremu
-define (MODCLEARBINAR,     0x28);      // nulovani binarniho archivu
-define (MODINITSTATUS,     0x29);      // nulovani souctoveho statusu
-define (MODSTARTTEST,      0x2A);      // spusteni testu pristroje
-define (MODFTPKLIENT,      0x31);      // inicializace klienta ftp, nastavi pocatecni cas, ktery bude odeslan v pristi session
+define ('MODRESET',          0x00);      // MASTER reset
+define ('MODUNLOCKUSER',     0x10);      // odemknuti uzivatelske sekce
+define ('MODUNLOCKMETROLOG', 0x11);      // odemknuti metrologicke sekce
+define ('MODCLEARDATA',      0x24);      // nulovani datoveho archivu
+define ('MODCLEARDAY',       0x25);      // nulovani denniho archivu
+define ('MODCLEARMONTH',     0x26);      // nulovani mesicniho archivu
+define ('MODCLEAREXTREM',    0x27);      // nulovani archivu extremu
+define ('MODCLEARBINAR',     0x28);      // nulovani binarniho archivu
+define ('MODINITSTATUS',     0x29);      // nulovani souctoveho statusu
+define ('MODSTARTTEST',      0x2A);      // spusteni testu pristroje
+define ('MODFTPKLIENT',      0x31);      // inicializace klienta ftp, nastavi pocatecni cas, ktery bude odeslan v pristi session
 
 $force_coil_code =
 array(
@@ -66,6 +66,7 @@ array(
 function analyze_force_coil(&$FRAME, $address)
 {
 	global $force_coil_code;
+	$answer = [];
 
 	if( substr_cut($FRAME, 2) == "FF00" )
 	{
