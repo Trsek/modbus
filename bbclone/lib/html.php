@@ -81,7 +81,7 @@ class bbc_html {
           .".</i></p>\n";
   }
 
-  function bbc_html() {
+  function __construct() {
     if (_BBC_PHP < 410) global $HTTP_SERVER_VARS;
 
     global $translation;

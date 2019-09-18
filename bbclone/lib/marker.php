@@ -287,7 +287,7 @@ class bbc_marker {
   }
 
   // constructor
-  function bbc_marker() {
+  function __construct() {
     if (_BBC_PHP < 410) global $HTTP_SERVER_VARS;
 
     global $BBC_CACHE_PATH, $BBC_COUNTER_PREFIX, $BBC_COUNTER_SUFFIX, $BBC_IGNORE_IP, $BBC_SEP, $BBC_TIMESTAMP,

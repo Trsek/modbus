@@ -35,7 +35,8 @@ function bbc_sort_time_sc($row_a, $row_b) {
 function bbc_get_key($array, $str) {
   reset($array);
 
-  while (list($idx, $val) = each($array)) {
+//  while (list($idx, $val) = each($array)) {
+  foreach($array as $idx => $val) {
     if ($val == $str) return $idx;
   }
   return 0;

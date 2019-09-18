@@ -48,7 +48,7 @@ $BBC_SHOW_CONFIG = "1";
 // $BBC_TITLEBAR = ""; => "Statistics for %SERVER generated on %DATE" but language specific (Default)
 // $BBC_TITLEBAR = "Some text"; => FIXED TEXT, not language specific)
 // $BBC_TITLEBAR = "Statistics for %SERVER generated on %DATE"; => Example
-$BBC_TITLEBAR = "Štatistika pre %SERVER generovaná v %DATE";
+$BBC_TITLEBAR = "Štatistika pre MODBUS parser generovaná v %DATE";
 
 // BBClone's default language, in case it hasn't been specified by the browser.
 // It's strongly recommended you set your language (if listed) because will encode search
