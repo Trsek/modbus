@@ -63,13 +63,11 @@ function bbc_update_connect($connect) {
   foreach (array("robot", "browser", "os") as $rule) {
     reset($$rule);
 
-//    while (list(${$rule."_name"}, ${$rule."_elem"}) = each($$rule)) 
     foreach ($$rule as ${$rule."_name"} => ${$rule."_elem"}) {
       reset(${$rule."_elem"}['rule']);
 
-//      while (list($pattern, $note) = each(${$rule."_elem"}['rule'])) {
       foreach (${$rule."_elem"}['rule'] as $pattern => $note) {
-		if (!preg_match('~'.$pattern.'~i', $connect['agent'], $regs)) continue;
+        if (!preg_match('~'.$pattern.'~i', $connect['agent'], $regs)) continue;
         $connect[$rule] = ${$rule."_name"};
 
         if (preg_match(":\\\\[0-9]{1}:" ,$note)) {

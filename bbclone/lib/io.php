@@ -131,7 +131,6 @@ function bbc_array_to_str(&$tab) {
 
   reset($tab);
 
-//  while (list($key, $val) = each($tab)) {
   foreach ($tab as $key => $val) {
     // The separator treatment
     if (($last_is_array) || (is_array($val) && ($k !== 0))) {

@@ -90,7 +90,7 @@ function bbc_list_visits() {
   reset($last['traffic']);
 
   // Search for traffic row with selected id, result in $connect
-  while (list(, $connect) = each($last['traffic'])) {
+  foreach($last['traffic'] as $connect) {
     if ((isset($connect['id'])) && ($connect['id'] == ((_BBC_PHP < 410) ? $HTTP_GET_VARS['id'] : $_GET['id']))) {
       $is_id = 1;
       break;

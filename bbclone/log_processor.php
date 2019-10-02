@@ -35,7 +35,6 @@ function bbc_sort_time_sc($row_a, $row_b) {
 function bbc_get_key($array, $str) {
   reset($array);
 
-//  while (list($idx, $val) = each($array)) {
   foreach($array as $idx => $val) {
     if ($val == $str) return $idx;
   }
@@ -49,7 +48,7 @@ function bbc_purge_single() {
   foreach (array("host", "key", "referer") as $cat) {
     reset($access[$cat]);
 
-    while (list($key, $score) = each($access[$cat])) {
+    foreach($access[$cat] as $key => $score) {
       if ($score == 1) {
         unset($access[$cat][$key]);
         ($cat == "referer") ? ++$access[$cat]['not_specified'] : "";

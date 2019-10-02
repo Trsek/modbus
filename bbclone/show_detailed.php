@@ -169,7 +169,7 @@ function bbc_rows_gen() {
   	$style_class = $BBC_HTML->connect_color_class($last['traffic'][$k]);
     $str .= "<tr class=\"$style_class hover_white\">\n";
     reset($fields);
-    while (list(, $val) = each($fields)) {
+    foreach($fields as $val) {
       $cell = bbc_show_connect_field($last['traffic'][$k], $val, $BBC_HTML->lng, $last['pages']);
       $str .= "<td class=\"cell\">".(empty($cell) ? "&nbsp;" : $cell)."</td>\n";
     }
