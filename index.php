@@ -32,6 +32,9 @@ F8030000002851BD";
   		$_REQUEST["MODBUS_FRAME"] = "F0050011 FF00 C91E";
 	}
 
+	if( isset($_REQUEST["FRAME"]))
+		$_REQUEST["MODBUS_FRAME"] = $_REQUEST["FRAME"];
+
 	$strict = !empty($_POST["Strict"]);
 	$MODBUS_FRAME = MODBUS_NORMALIZE($_REQUEST["MODBUS_FRAME"], $strict);
 	
