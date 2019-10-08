@@ -9,15 +9,15 @@
 	// some example for debug mode
 	if(IsSet($_REQUEST["XDEBUG_SESSION_START"]))
 	{
-  		$debug_cesta = "/modbus/";
-  		$_REQUEST["MODBUS_FRAME"] = "TX: 01-10-00-78-00-04-08-00-00-00-00-00-00-00-00-16-DA";
-  		$_REQUEST["MODBUS_FRAME"] = "F810019C0001020008C49E";
-  		$_REQUEST["MODBUS_FRAME"] = "F8050010FF009996";
-  		$_REQUEST["MODBUS_FRAME"] = "F885049362";
-  		$_REQUEST["MODBUS_FRAME"] = "F81001280003063611140317037C50
-  				
+		$debug_cesta = "/modbus/";
+		$_REQUEST["MODBUS_FRAME"] = "TX: 01-10-00-78-00-04-08-00-00-00-00-00-00-00-00-16-DA";
+		$_REQUEST["MODBUS_FRAME"] = "F810019C0001020008C49E";
+		$_REQUEST["MODBUS_FRAME"] = "F8050010FF009996";
+		$_REQUEST["MODBUS_FRAME"] = "F885049362";
+		$_REQUEST["MODBUS_FRAME"] = "F81001280003063611140317037C50
+
 F8030000002851BD";
-  		$_REQUEST["MODBUS_FRAME"] = "12:35:43.78 TX: F8 10 00 9F 00 02 04 00 00 00 01 56 DC 
+		$_REQUEST["MODBUS_FRAME"] = "12:35:43.78 TX: F8 10 00 9F 00 02 04 00 00 00 01 56 DC 
 12:35:48.79 RX: 
 14:02:05.89 TX: F8 03 01 2B 00 02 A1 96 
 14:02:10.89 RX: 
@@ -29,25 +29,28 @@ F8030000002851BD";
 14:17:41.12 RX: F8 90 04 9D F2 
 14:18:07.07 TX: F8 10 01 2B 00 02 04 00 04 05 05 12 99 
 14:18:10.02 RX: F8 10 01 2B 00 02 24 55";
-  		$_REQUEST["MODBUS_FRAME"] = "F0050011 FF00 C91E";
-	}
+		$_REQUEST["MODBUS_FRAME"] = "F0050011 FF00 C91E";
+		$_REQUEST["MODBUS_FRAME"] = "Read: 00 01 00 00 00 06 01 03 10 1E 00 01 
+Write: 00 01 00 00 00 05 01 03 02 07 E3 ";
+		$_POST["TCP"] = "1";	}
 
 	if( isset($_REQUEST["FRAME"]))
 		$_REQUEST["MODBUS_FRAME"] = $_REQUEST["FRAME"];
 
 	$strict = !empty($_POST["Strict"]);
+	$tcp = !empty($_POST["TCP"]);
 	$MODBUS_FRAME = MODBUS_NORMALIZE($_REQUEST["MODBUS_FRAME"], $strict);
 	
 	// pre json
 	if( isset($_REQUEST["JSON"])) {
-	    echo json_encode( modbus_analyze_frame($MODBUS_FRAME, $DIR));
-	    return;
+		echo json_encode( modbus_analyze_frame($MODBUS_FRAME, $DIR));
+		return;
 	}
 
 	// pre app
 	if( isset($_REQUEST["FLAT"])) {
 		echo "<head><meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=UTF-8'><link rel='stylesheet' href='modbus_flat.css'></head>";
-		echo modbus_show($MODBUS_FRAME);
+		echo modbus_show($MODBUS_FRAME, $tcp);
 		return;
 	}
 ?>
@@ -69,14 +72,15 @@ F8030000002851BD";
 <form action='index.php' method='post' ENCTYPE='multipart/form-data' class='form-style-two'>
 	Packet (hex format)<br>
 	<textarea name='MODBUS_FRAME' rows="9" cols="63"><?php echo $MODBUS_FRAME;?></textarea><br>
-	Strict Mode <input type='checkbox' name='Strict' <?php if($strict) echo 'checked=on';?>'><br><br>
+	Strict Mode <input type='checkbox' name='Strict' <?php if($strict) echo 'checked=on';?>'>
+	TCP <input type='checkbox' name='TCP' <?php if($tcp) echo 'checked=on';?>'><br><br>
 	<input type='submit' name='analyze' value='analyze'><br>
 </form>
 	
 <br>Frame<br>
 <?php
 //var_dump($GLOBALS);
-echo modbus_show($MODBUS_FRAME);
+echo modbus_show($MODBUS_FRAME, $tcp);
 ?>
 
 <?php

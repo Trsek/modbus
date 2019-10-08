@@ -41,6 +41,10 @@ function MODBUS_NORMALIZE($FRAME, $strict)
 		    $FRAME_LINE = substr($FRAME_LINE, $poz, strlen($FRAME_LINE) - $poz);
 		
 		// strip all spaces
+		$FRAME_LINE = str_replace("Read:", '', $FRAME_LINE);
+		$FRAME_LINE = str_replace("READ:", '', $FRAME_LINE);
+		$FRAME_LINE = str_replace("Write:", '', $FRAME_LINE);
+		$FRAME_LINE = str_replace("WRITE:", '', $FRAME_LINE);
 		$FRAME_LINE = str_replace(' ', '', $FRAME_LINE);
 		$FRAME_LINE = str_replace(':', '', $FRAME_LINE);
 		$FRAME_LINE = str_replace('.', '', $FRAME_LINE);
@@ -123,10 +127,10 @@ function modbus_array_show($value)
  * @brief Show analyze FRAME
  * @retval HTML table format
  */
-function modbus_show_packet($FRAME, &$disp)
+function modbus_show_packet($FRAME, $tcp, &$disp)
 {
 	$to_device = false;
-	$FRAME_OUT = modbus_analyze_frame($FRAME, $to_device);
+	$FRAME_OUT = modbus_analyze_frame($FRAME, $tcp, $to_device);
 
 	$disp = show_dir($to_device). $FRAME_OUT['FUNCT'][0];
 	if( isset($FRAME_OUT['ADDRESS'])) $disp .= ' ('. substr($FRAME_OUT['ADDRESS'],0,5) .')';
@@ -151,20 +155,20 @@ function modbus_show_packet($FRAME, &$disp)
 * @brief Show analyze PACKET
 * @retval HTML table format
 */
-function modbus_show($FRAME)
+function modbus_show($FRAME, $tcp)
 {
 	$FRAME = explode("\n", $FRAME);
 	$disp = "";
 	
 	// single line
 	if( count($FRAME) <= 1)
-		return modbus_show_packet($FRAME[0], $disp);
+		return modbus_show_packet($FRAME[0], $tcp, $disp);
 	
 	// multi line
 	$first = true;
 	foreach ($FRAME as $FRAME_LINE)
 	{
-		$out_data = modbus_show_packet($FRAME_LINE, $disp);
+		$out_data = modbus_show_packet($FRAME_LINE, $tcp, $disp);
 		$out .= "<li><a href='index.php?MODBUS_FRAME=$FRAME_LINE' title='$disp'>+ $disp</a>";
 		$out .= $first? "<ul class='hidden'>": "<ul>";
 		$out .= $out_data;
@@ -217,16 +221,28 @@ function MODBUS_POSSIBLE($data)
 /********************************************************************
 * @brief MetaAnalyze frame name
 */
-function modbus_analyze_frame(&$FRAME, &$to_device)
+function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 {
-	$crc         = substr_cut($FRAME, -2);
-	$crc_compute = CRC_MODBUS($FRAME);
-	
-	$to_device = 'none';
-	$FRAME_DATI = [];
-	$FRAME_DATI['ID']    = substr_cut($FRAME, 1) .'h - Device address';
-	$FRAME_DATI['FUNCT'] = hexdec(substr_cut($FRAME, 1));	
+	if($tcp)
+	{
+		$FRAME_DATI = [];
+		$FRAME_DATI['TransID']  = substr_cut($FRAME, 2) .'h - TransID';
+		$FRAME_DATI['Protocol'] = substr_cut($FRAME, 2) .'h - Protocol';
+		$FRAME_DATI['TCPLen']   = substr_cut($FRAME, 2) .'h - Length';
+		$FRAME_DATI['UNIT']     = substr_cut($FRAME, 1) .'h - Unit';
+		$FRAME_DATI['FUNCT'] = hexdec(substr_cut($FRAME, 1));
+	}
+	else 
+	{
+		$crc         = substr_cut($FRAME, -2);
+		$crc_compute = CRC_MODBUS($FRAME);
 
+		$FRAME_DATI = [];
+		$FRAME_DATI['ID']    = substr_cut($FRAME, 1) .'h - Device address';
+		$FRAME_DATI['FUNCT'] = hexdec(substr_cut($FRAME, 1));
+	}
+
+	$to_device = 'none';
 	$funct_id = $FRAME_DATI['FUNCT'];
 	switch( $funct_id )
 	{
