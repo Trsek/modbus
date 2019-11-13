@@ -129,12 +129,15 @@ function modbus_array_show($value)
  */
 function modbus_show_packet($FRAME, $tcp, &$disp)
 {
+    global $funct_code;
+
 	$to_device = false;
 	$FRAME_OUT = modbus_analyze_frame($FRAME, $tcp, $to_device);
 
 	$disp = show_dir($to_device). $FRAME_OUT['FUNCT'][0];
 	if( isset($FRAME_OUT['ADDRESS'])) $disp .= ' ('. substr($FRAME_OUT['ADDRESS'],0,5) .')';
 	if( strpos($FRAME_OUT['CRC'], 'OK') == false ) $disp .= ' (bad CRC)';
+	if( strpos($FRAME_OUT['FUNCT'][0], $funct_code[MODBUS_TUNEL][0]) > 0) $disp .= ' ('. $FRAME_OUT['DATA'][0][0] .')';
 
 	$out  = "<table class='table-style-two'>\n";
 	foreach ($FRAME_OUT as $name => $value)
