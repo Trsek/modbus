@@ -31,7 +31,17 @@ function MODBUS_NORMALIZE($FRAME, $strict)
 			$poz += 2;
 			$FRAME_LINE = substr($FRAME_LINE, $poz, strlen($FRAME_LINE) - $poz);
 		}
-		    
+		
+		// od noveho jadra Telves
+		if( ( $poz = strpos($FRAME_LINE, 'W:')) > 0 ) {
+		    $poz += 2;
+		    $FRAME_LINE = substr($FRAME_LINE, $poz, strlen($FRAME_LINE) - $poz);
+		}
+		if( ( $poz = strpos($FRAME_LINE, 'R:')) > 0 ) {
+		    $poz += 2;
+		    $FRAME_LINE = substr($FRAME_LINE, $poz, strlen($FRAME_LINE) - $poz);
+		}
+		
 		// s casovou znackou od telvesu
 		if( isValidDateTimeString( substr($FRAME_LINE, 1, 8)))
 		    $FRAME_LINE = substr($FRAME_LINE, 9);
