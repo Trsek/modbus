@@ -45,7 +45,9 @@ Write: 00 01 00 00 00 05 01 03 02 07 E3 ";
 	
 	// pre json
 	if( isset($_REQUEST["JSON"])) {
-		echo json_encode( modbus_analyze_frame($MODBUS_FRAME, $DIR));
+		$TCP = !empty($_REQUEST["TCP"]);
+		$DIR = !empty($_REQUEST["DIR"]);
+		echo json_encode( mb_convert_encoding( modbus_analyze_frame($MODBUS_FRAME, $TCP, $DIR), 'UTF-8', 'UTF-8'));
 		return;
 	}
 
