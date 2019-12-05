@@ -51,7 +51,8 @@ function hexToStr($hex)
 {
 	$string='';
 	for ($i=0; $i < strlen($hex)-1; $i+=2){
-		$string .= chr(hexdec($hex[$i].$hex[$i+1]));
+		$znak = chr(hexdec($hex[$i].$hex[$i+1]));
+		$string .= (ord($znak) < 0x20)? '?': $znak;
 	}
 	return $string;
 }
