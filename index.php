@@ -33,14 +33,15 @@ F8030000002851BD";
 		$_REQUEST["MODBUS_FRAME"] = "Read: 00 01 00 00 00 06 01 03 10 1E 00 01 
 Write: 00 01 00 00 00 05 01 03 02 07 E3 ";
 		$_REQUEST["MODBUS_FRAME"] = "0001000000060103101E0001";
-		$_POST["TCP"] = "1";
+		$_REQUEST["TCP"] = "1";
+		//$_REQUEST["Strict"] = "1";
 	}
 
 	if( isset($_REQUEST["FRAME"]))
 		$_REQUEST["MODBUS_FRAME"] = $_REQUEST["FRAME"];
 
-	$strict = !empty($_POST["Strict"]);
-	$tcp = !empty($_POST["TCP"]);
+	$strict = !empty($_REQUEST["Strict"]);
+	$tcp = !empty($_REQUEST["TCP"]);
 	$MODBUS_FRAME = MODBUS_NORMALIZE($_REQUEST["MODBUS_FRAME"], $strict);
 	
 	// pre json

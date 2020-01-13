@@ -14,6 +14,10 @@
 	// make link for customer
 	if( !empty($_REQUEST["MODBUS_FRAME"])) {
 		$link = "?MODBUS_FRAME=". $_REQUEST["MODBUS_FRAME"];
+		if(!empty($_REQUEST["TCP"]))
+			$link .= "&TCP=" . $_REQUEST["TCP"];
+		if(!empty($_REQUEST["Strict"]))
+			$link .= "&Strict=" . $_REQUEST["Strict"];
 		echo("<div align='right'><a href='$link'>Copy link of packet</a></div>");
 	} 
 	
