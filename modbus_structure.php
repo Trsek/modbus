@@ -232,6 +232,31 @@ function MODBUS_POSSIBLE($data)
 }
 
 /********************************************************************
+ * @brief Get offset of register, coil, input
+ */
+function GetOffset($funct_id)
+{
+    switch ($funct_id)
+    {
+        case MODBUS_READ_COIL:
+        case MODBUS_FORCE_COIL:
+            return 1;
+        case MODBUS_READ_INPUT:
+            return 10001;
+        case MODBUS_READ_INPUT_REG:
+            return 30001;
+        case MODBUS_READ_HOLD_REG:
+        case MODBUS_WRITE_REGISTER:
+        case MODBUS_06:
+        case MODBUS_22:
+        case MODBUS_23:
+        case MODBUS_24:
+            return 40001;
+    }
+    return 1;
+}
+
+/********************************************************************
 * @brief MetaAnalyze frame name
 */
 function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
@@ -243,7 +268,7 @@ function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 		$FRAME_DATI['Protocol'] = substr_cut($FRAME, 2) .'h - Protocol';
 		$FRAME_DATI['TCPLen']   = substr_cut($FRAME, 2) .'h - Length';
 		$FRAME_DATI['UNIT']     = substr_cut($FRAME, 1) .'h - Unit';
-		$FRAME_DATI['FUNCT'] = hexdec(substr_cut($FRAME, 1));
+		$FRAME_DATI['FUNCT']    = hexdec(substr_cut($FRAME, 1));
 	}
 	else 
 	{
@@ -318,7 +343,7 @@ function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 	}
 	
 	if( !empty($FRAME_DATI['ADDRESS']))
-	    $FRAME_DATI['ADDRESS'] .= " -> ". (40001 + hexdec(substr($FRAME_DATI['ADDRESS'], 0, -1)));
+	    $FRAME_DATI['ADDRESS'] .= " -> ". (GetOffset($funct_id) + hexdec(substr($FRAME_DATI['ADDRESS'], 0, -1)));
 	    
     if( !empty($FRAME))
         $answer[] = MODBUS_POSSIBLE($FRAME);
