@@ -80,5 +80,58 @@ function analyze_force_coil(&$FRAME, $address)
 	return $answer;
 }
 
+/********************************************************************
+ * @brief Human information about Force coil function
+ * @param $address - identification in dec format
+ */
+function analyze_read_coils(&$FRAME)
+{
+	global $force_coil_code;
+	$answer = [];
+
+	$len = strlen($FRAME)/2*8;
+	$coil = 0x00;
+
+	for($i=0; $i<$len; $i++)
+	{
+		if(($i % 8) == 0)
+		{
+		    $coil = hexdec(substr_cut($FRAME, 1));
+		    $answer[] = $coil . "h coil";
+		}
+
+		$is_on = ($coil & (1 << ($i % 8)))? true: false;
+		$answer[] = ($is_on? 'ON': 'OFF');
+	}
+
+	return $answer;
+}
+
+/********************************************************************
+ * @brief Human information about Force coil function
+ * @param $address - identification in dec format
+ */
+function analyze_force_multi_coils(&$FRAME, $address, $count)
+{
+	global $force_coil_code;
+	$answer = [];
+	$coil = 0x00;
+
+	if( strlen($FRAME) < 2)
+	    return $answer;
+
+	$answer[] = hexdec(substr_cut($FRAME, 1)) . ' - Bytes';
+	for($i=0; $i<$count; $i++)
+	{
+		if(($i % 8) == 0)
+		    $coil = hexdec(substr_cut($FRAME, 1));
+
+		$is_on = ($coil & (1 << ($i % 8)))? true: false;
+		$answer[] = ($is_on? 'ON': 'OFF') . ' - ' . ($address + $i) .'h';
+	}
+
+	return $answer;
+}
+
 /*----------------------------------------------------------------------------*/
 /* END OF FILE */

@@ -289,7 +289,15 @@ function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 		    $FRAME_DATI['ADDRESS'] = $address .'h';
 		    $answer = analyze_force_coil($FRAME, $address);
 			break;
-				
+
+		case MODBUS_FORCE_MULTI_COILS:
+		    $address = substr_cut($FRAME, 2);
+		    $count = substr_cut($FRAME, 2);
+		    $FRAME_DATI['ADDRESS'] = $address .'h';
+		    $FRAME_DATI['COUNT'] = $count .'h';
+		    $answer = analyze_force_multi_coils($FRAME, $address, $count);
+		    break;
+		    
 		case MODBUS_WRITE_REGISTER:
 		    if( strlen($FRAME) != 8 )
 		    {
@@ -323,8 +331,10 @@ function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 		    {
 		        $to_device = false;
 		        $FRAME_DATI['LENGTH']  = hexdec(substr_cut($FRAME, 1)) .' byte';
+		        if ($funct_id == MODBUS_READ_COIL)
+		            $answer = analyze_read_coils($FRAME);
 		    }
-			break;
+		    break;
 
 		case MODBUS_TUNEL:
 			$FRAME_DATI['LENGTH']  = hexdec(rotOrder(substr_cut($FRAME, 2),2));
