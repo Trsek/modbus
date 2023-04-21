@@ -1,7 +1,14 @@
 <?php
 define ('MODRESET',          0x00);      // MASTER reset
+define ('WRITEEEPROM',       0x01);      // zapis do EEPROM
+define ('READEEPROM',        0x02);      // cteni z EEPROM
+define ('STOPMEASURE',       0x03);      // zastav mereni
+define ('SINGLEMEASURE',     0x04);
 define ('MODUNLOCKUSER',     0x10);      // odemknuti uzivatelske sekce
 define ('MODUNLOCKMETROLOG', 0x11);      // odemknuti metrologicke sekce
+define ('UNLOCKFACTORY',     0x12);      // Unlock Factory configuration section
+define ('CHANGEUSERPASSWORD',0x18);
+define ('CHANGESERVICEPASSWORD',0x19);
 define ('MODCLEARDATA',      0x24);      // nulovani datoveho archivu
 define ('MODCLEARDAY',       0x25);      // nulovani denniho archivu
 define ('MODCLEARMONTH',     0x26);      // nulovani mesicniho archivu
@@ -9,15 +16,18 @@ define ('MODCLEAREXTREM',    0x27);      // nulovani archivu extremu
 define ('MODCLEARBINAR',     0x28);      // nulovani binarniho archivu
 define ('MODINITSTATUS',     0x29);      // nulovani souctoveho statusu
 define ('MODSTARTTEST',      0x2A);      // spusteni testu pristroje
+define ('CHANGEENCODER',     0x2E);      // Čtení encoderu
 define ('MODFTPKLIENT',      0x31);      // inicializace klienta ftp, nastavi pocatecni cas, ktery bude odeslan v pristi session
+define ('CHANGEENCODER2',    0x39);
+define ('CLRARCHBLOCK',      0x3A);      // inicializace casu pocatku archivniho bloku - prvni zaznam archivniho bloku bude opet nejmladsi zaznam
 
 $force_coil_code =
 array(
-		MODRESET           => array('MASTER reset'),
-        0x01               => array('Write EEPROM'),
-        0x02               => array('Read EEPROM'),
-        0x03               => array('Stop measurement'),
-        0x04               => array('Start single measurement'),
+        MODRESET           => array('MASTER reset'),
+        WRITEEEPROM        => array('Write EEPROM'),
+        READEEPROM         => array('Read EEPROM'),
+        STOPMEASURE        => array('Stop measurement'),
+        SINGLEMEASURE      => array('Start single measurement'),
         0x05               => array('Start kontinuálního měření'),
         0x06               => array('Modul reset'),
         0x07               => array('Synchro LED a normální režim'),
@@ -30,25 +40,25 @@ array(
         0x0E               => array('Zapnutí / vypnutí diody LED u SD karty'),
         0x0F               => array('1 .. stav přístroje  ERROR, 0 .. stav přístroje OK (varovné blikání Status LED)'),
         MODUNLOCKUSER      => array('Odemknutí uživatelské sekce'),
-		MODUNLOCKMETROLOG  => array('Odemknutí servisní sekce'),
-        0x12               => array('Unlock Factory configuration section'),
-        0x18               => array('Change user password'),
-        0x19               => array('Change service password'),
+        MODUNLOCKMETROLOG  => array('Odemknutí servisní sekce'),
+        UNLOCKFACTORY      => array('Unlock Factory configuration section'),
+        CHANGEUSERPASSWORD => array('Change user password'),
+        CHANGESERVICEPASSWORD => array('Change service password'),
         0x20               => array('Set / Reset INT signál'),
         0x21               => array('Napájení čidel na svorkách'),
         0x22               => array('Napájení čidel na konektoru Cannon'),
         0x23               => array('Nulováni skryte diagnostiky'),
         MODCLEARDATA       => array('Nulováni datového archivu'),
-		MODCLEARDAY        => array('Nulováni denního archivu'),
-		MODCLEARMONTH      => array('Nulováni mesičního archivu'),
-		MODCLEAREXTREM     => array('Nulováni archívu extremu'),
-		MODCLEARBINAR      => array('Nulováni binarního archivu'),
-		MODINITSTATUS      => array('Nulováni součtového statusu'),
-		MODSTARTTEST       => array('Spuštení testovacího režimu'),
+        MODCLEARDAY        => array('Nulováni denního archivu'),
+        MODCLEARMONTH      => array('Nulováni mesičního archivu'),
+        MODCLEAREXTREM     => array('Nulováni archívu extremu'),
+        MODCLEARBINAR      => array('Nulováni binarního archivu'),
+        MODINITSTATUS      => array('Nulováni součtového statusu'),
+        MODSTARTTEST       => array('Spuštení testovacího režimu'),
         0x2B               => array('Zap / vyp napájení int. sběrnice'),
         0x2C               => array('Zapnutí modemu'),
         0x2D               => array('Zapnuti analogové části (miniElcor)'),
-        0x2E               => array('Čtení encoderu'),
+        CHANGEENCODER      => array('Čtení encoderu'),
         0x2F               => array('Rízení spotreby modemu (Sleep)'),
         0x30               => array('Zapnutí encoderu SCR'),
         MODFTPKLIENT       => array('Inicializace klienta ftp, nastaví počáteční čas, který bude odeslán v príští session'),
@@ -56,6 +66,7 @@ array(
         0x33               => array('Test optické závory LED2'),
         0x34               => array('Zap/ vyp hlavního napájení (PWRDN_N)'),
         0x35               => array('Zap/ vyp hlavního napájení (COMP_ZAP)'),
+        CLRARCHBLOCK       => array('inicializace casu pocatku archivniho bloku - prvni zaznam archivniho bloku bude opet nejmladsi zaznam'),
 );
 
 
