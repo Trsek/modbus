@@ -340,7 +340,6 @@ function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 			$FRAME_DATI['LENGTH']  = hexdec(rotOrder(substr_cut($FRAME, 2),2));
 			$type  = hexdec( substr_cut($FRAME, 1));
 			$group = hexdec( substr_cut($FRAME, 1));
-			$port  = hexdec( substr_cut($FRAME, 1));
 			$to_device = ($type == 0x84)? true: false;
 			$answer[] = json_decode( file_get_contents('http://'. $_SERVER['HTTP_HOST']. '/elgas2/index.php?JSON&ELGAS_FRAME='. $FRAME. '&GROUP='. $group. '&TYPE='. $type), true);
 			unset($FRAME);
