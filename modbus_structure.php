@@ -195,6 +195,9 @@ function modbusDisp($FRAME_OUT, $to_device)
 
 	$answer = show_dir($to_device). $FRAME_OUT['FUNCT'][0];
 
+	if( isset($FRAME_OUT['TransID']))
+		$answer .= ' '. ltrim(substr($FRAME_OUT['TransID'], 0, 4), '0'). 'h ';
+
 	if( isset($FRAME_OUT['ADDRESS']))
 		$answer .= ' ('. substr($FRAME_OUT['ADDRESS'],0,5) .')';
 
