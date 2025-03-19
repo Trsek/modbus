@@ -96,19 +96,6 @@ $error_code =
             m_IlegDevBusy   => array('Device bussy'),
     );
 
-$speed =
-    array(
-            0 => array('1200'),
-            1 => array('2400'),
-            2 => array('4800'),
-            3 => array('9600'),
-            4 => array('19200'),
-            5 => array('28800'),
-            6 => array('38400'),
-            7 => array('57600'),
-            8 => array('115200'),
-    );
-
 /********************************************************************
 * @brief Human information about Function
 * @param $funct_id - identification in dec format
@@ -146,17 +133,6 @@ function analyze_error(&$FRAME)
 	$error = hexdec(substr_cut($FRAME, 1));
 	$answer[] = strtoupper(dechex($error)). "h - ". $error_code[$error][0];
 	return $answer;
-}
-
-/********************************************************************
- * @brief Parse communication speed
- */
-function get_speed(&$FRAME)
-{
-    global $speed;
-
-    $speed_id = hexdec(substr_cut($FRAME, 1));
-    return strtoupper(dechex($speed_id)). "h - ". $speed[$speed_id][0];
 }
 
 /*----------------------------------------------------------------------------*/

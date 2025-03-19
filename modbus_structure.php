@@ -176,7 +176,7 @@ function modbus_show($FRAME, $tcp)
 	foreach ($FRAME as $FRAME_LINE)
 	{
 		$out_data = modbus_show_packet($FRAME_LINE, $tcp, $disp);
-		$out .= "<li><a href='index.php?MODBUS_FRAME=$FRAME_LINE' title='$disp'>+ $disp</a>";
+		$out .= "<li><a href='index.php?MODBUS_FRAME=$FRAME_LINE&amp;TCP=$tcp' title='$disp'>+ $disp</a>";
 		$out .= $first? "<ul class='hidden'>": "<ul>";
 		$out .= $out_data;
 		$out .= "<br></ul></li>";
@@ -209,6 +209,13 @@ function modbusDisp($FRAME_OUT, $to_device)
 
 	if(( strpos($FRAME_OUT['FUNCT'][0], $funct_code[MODBUS_TUNEL][0]) > 0) && isset($FRAME_OUT['DATA'][0][0]))
 		$answer .= ' ('. $FRAME_OUT['DATA'][0][0] .')';
+
+	if(( strpos($FRAME_OUT['FUNCT'][0], $funct_code[MODBUS_TUNEL][0]) > 0) && isset($FRAME_OUT['DATA'][0]['GROUP2']))
+	{
+		$answer .= ' ('. $FRAME_OUT['DATA'][0]['GROUP2'] .')';
+		if (isset($FRAME_OUT['DATA'][0]['FUNCT2'][0]))
+			$answer .= ' -> '. $FRAME_OUT['DATA'][0]['FUNCT2'][0];
+	}
 
 	return $answer;
 }
@@ -381,9 +388,7 @@ function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 			$type  = hexdec( substr_cut($FRAME, 1));
 			$group = hexdec( substr_cut($FRAME, 1));
 			$to_device = ($type == 0x84)? true: false;
-			if ($group == 0x8E)
-				$FRAME_DATI['TUNEL'] = modbus_tunel_param($FRAME);
-			$answer[] = json_decode( file_get_contents('http://'. $_SERVER['HTTP_HOST']. '/elgas2/index.php?JSON&ELGAS_FRAME='. $FRAME. '&GROUP='. $group. '&TYPE='. $type), true);
+			$answer[] = json_decode( file_get_contents('http://'. $_SERVER['HTTP_HOST']. '/elgas2/index.php?JSON&ELGAS_FRAME='. $FRAME. '&GROUP='. $group. '&TYPE='. $type. '&TCP='. $tcp), true);
 			unset($FRAME);
 			break;
 
@@ -404,7 +409,7 @@ function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 	
 	$FRAME_DATI['FUNCT'] = modbus_funct_name($funct_id);
 
-	if( isset($crc) && $crc != '????')
+	if( isset($crc) && $crc != '????' && $crc != 'FF00')
 		$FRAME_DATI['CRC'] = modbus_CRCCheck($crc_compute, $crc);
 	
 	return $FRAME_DATI;
