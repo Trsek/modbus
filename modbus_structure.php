@@ -278,6 +278,25 @@ function GetOffset($funct_id)
 }
 
 /********************************************************************
+ * @brief Tunel obsahuje rychlost, port, ..
+ */
+function modbus_tunel_param(&$DATI)
+{
+    $answer = [];
+
+    $protokol = hexdec(substr_cut($DATI, 2));
+    $answer['PROTOCOL'] = "MODBUS";
+    if (($protokol==2)
+      ||($protokol==7))
+        $answer['PROTOCOL'] = "ELGAS";
+
+    $answer['PORT'] = hexdec(substr_cut($DATI, 1));
+    $answer['SPEED'] = get_speed($DATI);
+    
+    return $answer;
+}
+
+/********************************************************************
 * @brief MetaAnalyze frame name
 */
 function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
@@ -358,14 +377,16 @@ function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 		    break;
 
 		case MODBUS_TUNEL:
-			$FRAME_DATI['LENGTH']  = hexdec(rotOrder(substr_cut($FRAME, 2),2));
+			$FRAME_DATI['LENGTH'] = hexdec(rotOrder(substr_cut($FRAME, 2),2));
 			$type  = hexdec( substr_cut($FRAME, 1));
 			$group = hexdec( substr_cut($FRAME, 1));
 			$to_device = ($type == 0x84)? true: false;
+			if ($group == 0x8E)
+				$FRAME_DATI['TUNEL'] = modbus_tunel_param($FRAME);
 			$answer[] = json_decode( file_get_contents('http://'. $_SERVER['HTTP_HOST']. '/elgas2/index.php?JSON&ELGAS_FRAME='. $FRAME. '&GROUP='. $group. '&TYPE='. $type), true);
 			unset($FRAME);
 			break;
-					
+
 		default:
 			if( $funct_id & 0x80 )
 				$answer = analyze_error($FRAME);

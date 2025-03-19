@@ -48,7 +48,7 @@ define ('m_IlegSlaveFail', 0x04);
 define ('m_IlegDevBusy',   0x06);
 
 $funct_code = 
-	array(
+    array(
             MODBUS_READ_COIL      => array('Read coil status'),
             MODBUS_READ_INPUT     => array('Read input status'),
             MODBUS_READ_HOLD_REG  => array('Read holding registers'),
@@ -84,16 +84,29 @@ $funct_code =
             MODBUS_65             => array('zapis sektoru v loaderu'),
             MODBUS_66             => array('kontrola a prehrani firmware'),
             MODBUS_6E             => array('pro speciální účely'),
-	    );
+    );
 
 $error_code =
-	array(
+    array(
             m_Ileg          => array('None'),
             m_IlegFunc      => array('Illegal function'),
             m_IlegDataAdr   => array('Illegal data address'),
             m_IlegDataVal   => array('Illegal data value'),
             m_IlegSlaveFail => array('Slave system fail'),
             m_IlegDevBusy   => array('Device bussy'),
+    );
+
+$speed =
+    array(
+            0 => array('1200'),
+            1 => array('2400'),
+            2 => array('4800'),
+            3 => array('9600'),
+            4 => array('19200'),
+            5 => array('28800'),
+            6 => array('38400'),
+            7 => array('57600'),
+            8 => array('115200'),
     );
 
 /********************************************************************
@@ -133,6 +146,17 @@ function analyze_error(&$FRAME)
 	$error = hexdec(substr_cut($FRAME, 1));
 	$answer[] = strtoupper(dechex($error)). "h - ". $error_code[$error][0];
 	return $answer;
+}
+
+/********************************************************************
+ * @brief Parse communication speed
+ */
+function get_speed(&$FRAME)
+{
+    global $speed;
+
+    $speed_id = hexdec(substr_cut($FRAME, 1));
+    return strtoupper(dechex($speed_id)). "h - ". $speed[$speed_id][0];
 }
 
 /*----------------------------------------------------------------------------*/
