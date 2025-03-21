@@ -95,6 +95,21 @@ function add_soft_space($DATI, $len)
 }
 
 /********************************************************************
+ * @brief Is direct to device?
+ */
+function ElgasToDevice($type)
+{
+    if( !is_numeric($type))
+        $type = hexdec(substr($type, 0, 2));
+        
+    if(( $type == 0x84 )
+    || ( $type == 0x85 ))
+        return true;
+            
+    return false;
+}
+
+/********************************************************************
  * @brief Make directory of packet
  */
 function show_dir($to_device)
@@ -206,9 +221,6 @@ function modbusDisp($FRAME_OUT, $to_device)
 
 	if(( strpos($FRAME_OUT['CRC'], 'OK') == false ) && isset($FRAME_OUT['CRC']))
 		$answer .= ' (bad CRC)';
-
-	if(( strpos($FRAME_OUT['FUNCT'][0], $funct_code[MODBUS_TUNEL][0]) > 0) && isset($FRAME_OUT['DATA'][0][0]))
-		$answer .= ' ('. $FRAME_OUT['DATA'][0][0] .')';
 
 	if(( strpos($FRAME_OUT['FUNCT'][0], $funct_code[MODBUS_TUNEL][0]) > 0) && isset($FRAME_OUT['DATA'][0]['GROUP2']))
 	{
@@ -387,7 +399,7 @@ function modbus_analyze_frame(&$FRAME, $tcp, &$to_device)
 			$FRAME_DATI['LENGTH'] = hexdec(rotOrder(substr_cut($FRAME, 2),2));
 			$type  = hexdec( substr_cut($FRAME, 1));
 			$group = hexdec( substr_cut($FRAME, 1));
-			$to_device = ($type == 0x84)? true: false;
+			$to_device = ElgasToDevice($type);
 			$answer[] = json_decode( file_get_contents('http://'. $_SERVER['HTTP_HOST']. '/elgas2/index.php?JSON&ELGAS_FRAME='. $FRAME. '&GROUP='. $group. '&TYPE='. $type. '&TCP='. $tcp), true);
 			unset($FRAME);
 			break;
