@@ -216,9 +216,6 @@ function modbusDisp($FRAME_OUT, $to_device)
 	if( isset($FRAME_OUT['ADDRESS']))
 		$answer .= ' ('. substr($FRAME_OUT['ADDRESS'],0,5) .')';
 
-	if( isset($FRAME_OUT['DATA'][0]['GROUP']))
-		$answer .= ' ('. $FRAME_OUT['DATA'][0]['GROUP'] .')';
-
 	if(( strpos($FRAME_OUT['CRC'], 'OK') == false ) && isset($FRAME_OUT['CRC']))
 		$answer .= ' (bad CRC)';
 
@@ -228,6 +225,9 @@ function modbusDisp($FRAME_OUT, $to_device)
 		if (isset($FRAME_OUT['DATA'][0]['FUNCT2'][0]))
 			$answer .= ' -> '. $FRAME_OUT['DATA'][0]['FUNCT2'][0];
 	}
+
+	if( isset($FRAME_OUT['DATA'][0]['GROUP']))
+		$answer .= ' -> '. $FRAME_OUT['DATA'][0]['GROUP'];
 
 	return $answer;
 }
